@@ -1,0 +1,124 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    outline: none;
+}
+
+body {
+	background: url(../images/login_bg.jpg) 0 no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.list {
+    width: 500px;
+    height: 350px;
+    background-color: #d9ecff;
+    position: relative;
+    border-radius: 20px;
+    border: 1px solid #90a0e3;
+    box-shadow: 0 0 50px rgb(239, 224, 224);
+}
+
+.list h1 {
+    font-family: "宋体";
+    font-weight: bold;
+    font-size: 40px;
+    margin: 20px 30px;
+}
+
+.list > span {
+    font-size: 12px;
+    position: absolute;
+    top: 45px;
+    right: 20px;
+}
+
+hr {
+    display: block;
+    clear: both;
+}
+
+.list form {
+    width: 100%;
+    height: 100%;
+    margin: 30px 60px;
+}
+
+.list form p {
+    width: 100%;
+    height: 70px;
+    line-height: 70px;
+    /* padding-top: 5px; */
+}
+
+.list form p label i {
+    width: 30px;
+    height: 30px;
+    background-size: 30px 30px;
+    display:inline-block;
+    vertical-align:middle;
+    margin: 0 5px;
+}
+
+.put {
+    width: 200px;
+    height: 30px;
+    /* font-family: "隶书"; */
+    font-size: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+.list form p:last-child input {
+    width: 70px;
+    height: 30px;
+    margin: 0 40px;
+    border-radius: 10px;
+}
+
+.error {
+    color: red;
+    font-size: 10px;
+    margin: 0 10px;
+}
+
+.ok {
+    color: green;
+    font-size: 10px;
+    margin: 0 10px;
+}
+
+#errorTips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#errorTips > p {
+    width: 100%;
+    height: 200px;
+    background-color: rgba(255, 0, 0, 0.5);
+    text-align: center;
+    line-height: 200px;
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    font-family: "宋体";
+}

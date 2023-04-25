@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.liubaiblog.poh.mapper.MenuMapper">
+
+    <!-- List<Menu> selectListByUser(Long uid); -->
+    <select id="selectListByUser" resultType="top.liubaiblog.poh.pojo.po.Menu">
+        select m.mid,
+               u.username,
+               m.parent_mid,
+               m.menu_name,
+               m.permission,
+               m.locked,
+               m.create_by,
+               m.create_time,
+               m.last_update_by,
+               m.last_update_time
+        from poh_menu m
+                 left join poh_role_connect_menu rm on m.mid = rm.mid
+                 left join poh_role r on r.rid = rm.rid
+                 left join poh_user_connect_role ur on ur.rid = r.rid
+                 left join poh_user u on ur.uid = u.uid
+        where u.uid = #{uid}
+          and u.locked = 0
+          and r.locked = 0
+          and m.locked = 0;
+    </select>
+
+    <!-- List<Menu> getByRoleId(Long rid); -->
+    <select id="getByRoleId" resultType="top.liubaiblog.poh.pojo.po.Menu">
+        select m.mid,
+               parent_mid,
+               menu_name,
+               permission
+        from poh_menu m
+                 left join poh_role_connect_menu rm on rm.mid = m.mid
+        where rm.rid = #{rid};
+    </select>
+
+</mapper>

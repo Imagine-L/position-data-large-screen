@@ -1,0 +1,18 @@
+spring:
+  rabbitmq:
+    host: 192.168.20.132
+    port: 5672
+    username: poh_admin
+    password: 123456
+    virtual-host: /poh
+poh:
+  iot:
+    client:
+      accessKey: LTAI5t9CZo9uFM8JvMHKYyo8
+      accessSecret: PiF86JIx0hrowoyL4Vyqzl0xzaWRsT
+      consumerGroupId: DEFAULT_GROUP
+      iotInstanceId: iot-06z00cqg67j37zl
+      clientId: XB001
+      host: 1293335680260657.iot-amqp.cn-shanghai.aliyuncs.com
+      connectionCount: 4
+      signMethod: hmacsha1

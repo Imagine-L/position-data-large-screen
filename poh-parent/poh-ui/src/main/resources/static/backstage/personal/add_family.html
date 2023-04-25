@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <script src="../../js/lib/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="../../js/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="../../js/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/backstage.css">
+    <script src="../../js/util/storageUtils.js"></script>
+    <script src="../../js/constant/constants.js"></script>
+    <script src="../../js/lib/axios.js"></script>
+    <script src="../../js/util/security.js"></script>
+    <script src="../../js/common/backstage.js"></script>
+    <script src="../../js/lib/md5.js"></script>
+    <style>
+        .error {
+            color: red;
+        }
+
+        .ok {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../device/device_list.html">识途后台系统</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../../index.html"><span class="glyphicon glyphicon-repeat"></span> 返回前台</a></li>
+            <li><a id="logout"><span class="glyphicon glyphicon-log-in"></span> 登出</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="../device/device_list.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        设备信息
+                    </h4>
+                </a>
+                <a href="../device/device_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备列表
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以查看和添加你的设备。
+                    </p>
+                </a>
+                <a href="../device/device_group_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以对您的设备进行分组。
+                    </p>
+                </a>
+                <a href="../device/add_device.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增设备
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的设备。
+                    </p>
+                </a>
+                <a href="../device/add_group.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的分组。
+                    </p>
+                </a>
+            </div>
+
+            <div class="list-group">
+                <a href="./personal_meg.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        隐私信息
+                    </h4>
+                </a>
+                <a href="./personal_meg.html" class="list-group-item ac">
+                    <h4 class="list-group-item-heading">
+                        个人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您个人注册的信息。
+                    </p>
+                </a>
+                <a href="./family_meg.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        家人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您创建的家人账号信息。
+                    </p>
+                </a>
+                <a href="./add_family.html" class="list-group-item">
+                    <h4 class="list-group-item-heading active_choose">
+                        添加家人
+                    </h4>
+                    <p class="list-group-item-text">
+                        新建与你关联的家人账号。
+                    </p>
+                </a>
+                <a href="./about_system.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        关于系统
+                    </h4>
+                    <p class="list-group-item-text">
+                        关于这个系统的来源。
+                    </p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="device_block">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        添加家人
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form" onsubmit="return false">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">家人用户名</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="text" class="form-control" id="username" placeholder="请输入家人用户名" maxlength="10">
+                        </div>
+                        <div style="line-height: 34px" id="usernameTip">*</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">家人密码</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="password" class="form-control" id="password" placeholder="请输入家人密码" maxlength="15">
+                        </div>
+                        <div style="line-height: 34px" id="passwordTip">*</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">家人名</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="text" class="form-control" id="nickname" placeholder="请输入家人名" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">家人身份</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="text" class="form-control" id="identity" placeholder="请输入家人身份" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10" style="width: 300px" id="gender">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="gender" value="0">
+                                    男
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="gender" value="1">
+                                    女
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="locked">锁定家人账户
+                                </label>
+                                &nbsp;&nbsp;
+                                <label>
+                                    <input type="checkbox" id="controlBackstage">允许家人控制后台
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" id="saveBtn">添加</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/backstage/personal/add_family.js"></script>
+<!--<script>-->
+<!--    // 验证用户名-->
+<!--    const checkUsername = () => {-->
+<!--        let $username = $('#username')-->
+<!--        let tip = $('#usernameTip');-->
+<!--        let username = $username.val();-->
+<!--        if (username === null || username === '') {-->
+<!--            // alert("dad")-->
+<!--            tip.text("请输入用户名");-->
+<!--            $username.css("borderColor", "red");-->
+<!--            tip.addClass("error");-->
+<!--            tip.removeClass("ok");-->
+<!--            return new Promise(resolve => resolve(false))-->
+<!--        }-->
+<!--        return new Promise((resolve, reject) => {-->
+<!--            axios({-->
+<!--                method: "GET",-->
+<!--                url: `/checkUser/${username}`,-->
+<!--            }).then(resp => {-->
+<!--                // 结果为false表示用户名不重复，验证成功-->
+<!--                if (!resp.data.data) {-->
+<!--                    tip.text("用户名验证成功");-->
+<!--                    $username.css("borderColor", "green");-->
+<!--                    tip.addClass("ok");-->
+<!--                    tip.removeClass("error");-->
+<!--                    resolve(true)-->
+<!--                } else {-->
+<!--                    tip.text("用户名已重复");-->
+<!--                    $username.css("borderColor", "red");-->
+<!--                    tip.addClass("error");-->
+<!--                    tip.removeClass("ok");-->
+<!--                    resolve(false)-->
+<!--                }-->
+<!--            })-->
+<!--        })-->
+<!--    }-->
+
+<!--    // 验证输入密码-->
+<!--    function checkPwd() {-->
+<!--        let $pwd = $('#password')-->
+<!--        let tip = $('#passwordTip');-->
+<!--        // 密码必须由数字、字母两种字符组成，长度在8-15位之间-->
+<!--        let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,15}$/;-->
+<!--        if (reg.test($pwd.val())) {-->
+<!--            tip.text("密码强度合格");-->
+<!--            $pwd.css("borderColor", "green");-->
+<!--            tip.addClass("ok");-->
+<!--            tip.removeClass("error");-->
+<!--            return true;-->
+<!--        } else {-->
+<!--            tip.text("密码强度过低");-->
+<!--            $pwd.css("borderColor", "red");-->
+<!--            tip.addClass("error");-->
+<!--            tip.removeClass("ok");-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+
+<!--    const saveUser = () => {-->
+<!--        if (!checkPwd()) {-->
+<!--            alert("密码不符合要求")-->
+<!--            return-->
+<!--        }-->
+<!--        let nickname = $('#nickname').val().trim()-->
+<!--        let identity = $('#identity').val().trim()-->
+<!--        let password = $('#password').val()-->
+<!--        let $gender = $('#gender input:checked')-->
+<!--        if (nickname === '') {-->
+<!--            alert('家人名不能为空')-->
+<!--            return-->
+<!--        }-->
+<!--        if (identity === '') {-->
+<!--            alert('家人身份不能为空')-->
+<!--            return-->
+<!--        }-->
+<!--        if ($gender.length !== 1) {-->
+<!--            alert("请选择家人性别")-->
+<!--            return-->
+<!--        }-->
+<!--        checkUsername().then(success => {-->
+<!--            if (!success) {-->
+<!--                alert("用户名不符合要求")-->
+<!--                return-->
+<!--            }-->
+<!--            let data = {-->
+<!--                username: $('#username').val(),-->
+<!--                password: md5(password),-->
+<!--                nickname: nickname,-->
+<!--                identity: identity,-->
+<!--                gender: $gender.val(),-->
+<!--                locked: $('#locked').prop('checked'),-->
+<!--                controlBackstage: $('#controlBackstage').prop('checked')-->
+<!--            }-->
+<!--            axios({-->
+<!--                method: "post",-->
+<!--                url: '/user/family',-->
+<!--                headers: {'Authorization': getToken()},-->
+<!--                data: data-->
+<!--            }).then(resp => {-->
+<!--                if (resp.data.success) {-->
+<!--                    location.href = '/backstage/personal/family_meg.html'-->
+<!--                } else {-->
+<!--                    alert("系统繁忙，请稍后重试")-->
+<!--                }-->
+<!--            })-->
+<!--        })-->
+<!--    }-->
+
+<!--    $('#saveBtn').click(() => {-->
+<!--        saveUser()-->
+<!--    })-->
+
+<!--    $('#username').blur(() => {-->
+<!--        checkUsername()-->
+<!--    })-->
+
+<!--    $('#password').blur(() => {-->
+<!--        checkPwd()-->
+<!--    })-->
+<!--</script>-->
+
+</body>
+</html>

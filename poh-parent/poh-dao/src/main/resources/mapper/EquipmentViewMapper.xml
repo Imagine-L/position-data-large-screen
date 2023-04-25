@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.liubaiblog.poh.mapper.EquipmentViewMapper">
+
+    <resultMap id="BaseResultMap" type="top.liubaiblog.poh.pojo.po.EquipmentView">
+        <result property="eid" column="eid" jdbcType="BIGINT"/>
+        <result property="equipName" column="equip_name" jdbcType="VARCHAR"/>
+        <result property="equipCode" column="equip_code" jdbcType="CHAR"/>
+        <result property="equipOwner" column="equip_owner" jdbcType="BIGINT"/>
+        <result property="danger" column="danger" jdbcType="BIT"/>
+        <result property="showed" column="showed" jdbcType="BIT"/>
+        <result property="main" column="main" jdbcType="BIT"/>
+        <result property="locked" column="locked" jdbcType="BIT"/>
+        <result property="batteryCapacity" column="battery_capacity" jdbcType="INTEGER"/>
+        <result property="version" column="version" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        eid
+        ,equip_name,equip_code,
+        equip_owner,danger,showed,
+        main,locked,battery_capacity,
+        version,`type`
+    </sql>
+
+    <!-- List<EquipmentView>  listByParams(EquipmentParams equipmentParams); -->
+    <select id="listByParams" resultType="top.liubaiblog.poh.pojo.vo.EquipmentVO">
+        select e.eid, e.equip_name, g.group_name, e.equip_code
+        from poh_equipment_view e
+        left join poh_equip_group g on e.group_id = g.gid
+        where e.equip_owner = ${uid}
+            <if test="equipName != null and equipName != ''">
+                and e.equip_name like "%"#{equipName}"%"
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and g.group_name like "%"#{groupName}"%"
+            </if>
+            <if test="equipCode != null and equipCode != ''">
+                and e.equip_code like "%"#{equipCode}"%"
+            </if>
+
+    </select>
+
+    <!--
+    <where>
+            <if test="equipName != null and equipName != ''">
+                e.equip_name like '%#{equipName}%'
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and g.group_name like '%#{groupName}%'
+            </if>
+            <if test="equipCode != null and equipCode != ''">
+                and e.equip_code like '%#{equipCode}%'
+            </if>
+        </where>
+    -->
+</mapper>

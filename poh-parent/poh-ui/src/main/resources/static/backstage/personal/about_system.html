@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <script src="../../js/lib/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="../../js/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="../../js/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/backstage.css">
+    <script src="../../js/util/storageUtils.js"></script>
+    <script src="../../js/constant/constants.js"></script>
+    <script src="../../js/lib/axios.js"></script>
+    <script src="../../js/util/security.js"></script>
+    <script src="../../js/common/backstage.js"></script>
+    <script src="../../js/lib/md5.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../device/device_list.html">识途后台系统</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../../index.html"><span class="glyphicon glyphicon-repeat"></span> 返回前台</a></li>
+            <li><a id="logout"><span class="glyphicon glyphicon-log-in"></span> 登出</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="../device/device_list.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        设备信息
+                    </h4>
+                </a>
+                <a href="../device/device_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备列表
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以查看和添加你的设备。
+                    </p>
+                </a>
+                <a href="../device/device_group_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以对您的设备进行分组。
+                    </p>
+                </a>
+                <a href="../device/add_device.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增设备
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的设备。
+                    </p>
+                </a>
+                <a href="../device/add_group.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的分组。
+                    </p>
+                </a>
+            </div>
+
+            <div class="list-group">
+                <a href="./personal_meg.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        隐私信息
+                    </h4>
+                </a>
+                <a href="./personal_meg.html" class="list-group-item ac">
+                    <h4 class="list-group-item-heading">
+                        个人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您个人注册的信息。
+                    </p>
+                </a>
+                <a href="./family_meg.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        家人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您创建的家人账号信息。
+                    </p>
+                </a>
+                <a href="./add_family.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        添加家人
+                    </h4>
+                    <p class="list-group-item-text">
+                        新建与你关联的家人账号。
+                    </p>
+                </a>
+                <a href="./about_system.html" class="list-group-item">
+                    <h4 class="list-group-item-heading active_choose">
+                        关于系统
+                    </h4>
+                    <p class="list-group-item-text">
+                        关于这个系统的来源。
+                    </p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="device_block">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        系统信息
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">系统名称</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">识途精准定位系统</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">系统版本</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">v1.0</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">上次更新</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">2022.06.30</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">系统制作</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">刘佳俊、杨良康、刘少龙、洪伟凡、王朝安、柯弘扬、袁明杰</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+<!--            <hr>-->
+<!--            <div class="device_block">-->
+<!--                <div class="panel panel-default">-->
+<!--                    <div class="panel-body">-->
+<!--                        创办者信息-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; 左对齐 &ndash;&gt;-->
+<!--                <div class="media">-->
+<!--                    <div class="media-left">-->
+<!--                        <img src="../../images/head.jpg" class="media-object" style="width:60px">-->
+<!--                    </div>-->
+<!--                    <div class="media-body">-->
+<!--                        <h4 class="media-heading">刘佳俊</h4>-->
+<!--                        <p>-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                &lt;!&ndash; 左对齐 &ndash;&gt;-->
+<!--                <div class="media">-->
+<!--                    <div class="media-left">-->
+<!--                        <img src="../../images/head.jpg" class="media-object" style="width:60px">-->
+<!--                    </div>-->
+<!--                    <div class="media-body">-->
+<!--                        <h4 class="media-heading">杨良康</h4>-->
+<!--                        <p>-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                &lt;!&ndash; 左对齐 &ndash;&gt;-->
+<!--                <div class="media">-->
+<!--                    <div class="media-left">-->
+<!--                        <img src="../../images/head.jpg" class="media-object" style="width:60px">-->
+<!--                    </div>-->
+<!--                    <div class="media-body">-->
+<!--                        <h4 class="media-heading">洪伟凡</h4>-->
+<!--                        <p>-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+<!--                &lt;!&ndash; 左对齐 &ndash;&gt;-->
+<!--                <div class="media">-->
+<!--                    <div class="media-left">-->
+<!--                        <img src="../../images/head.jpg" class="media-object" style="width:60px">-->
+<!--                    </div>-->
+<!--                    <div class="media-body">-->
+<!--                        <h4 class="media-heading">刘少龙</h4>-->
+<!--                        <p>-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                            这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本这是一些示例文本-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <hr>-->
+
+
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

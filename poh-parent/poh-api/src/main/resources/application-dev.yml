@@ -1,0 +1,50 @@
+server:
+  port: 8500
+spring:
+  application:
+    name: poh-server
+  # 数据库配置
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/poh_db?&useSSL=false&serverTimezone=GMT&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+      username: root
+      password: 123456
+      max-active: 500
+      max-wait: 200
+      min-idle: 20
+  # 消息中间件配置
+  rabbitmq:
+    host: 192.168.20.128
+    port: 5672
+    username: poh_admin
+    password: 123456
+    virtual-host: /poh
+  # redis配置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jackson:
+    date-format: yyyy-MM-dd
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+debug: true
+jwt:
+  secret-key: poh-location*&$!#
+  expiration: 86400000
+security:
+  ignore-address:
+    - /css/**
+    - /js/**
+    - /images/**
+    - /**/*.html
+    - /logout   # 注：这个 /logout 应该放在下方允许访问的地址中，但是放到下面这个地址依然会被拦截，所以放在上面处理
+    - /equipment/location/**
+  permit-address:
+    - /
+    - /login
+    - /register
+    - /checkUser/**

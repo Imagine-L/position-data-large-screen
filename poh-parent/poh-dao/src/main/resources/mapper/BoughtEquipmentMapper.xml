@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.liubaiblog.poh.mapper.BoughtEquipmentMapper">
+
+    <!-- Integer updateGroupIdById(@Param("ids") List<Long> ids, @Param("groupId") Long groupId); -->
+    <update id="updateGroupIdById">
+        update poh_bought_equipment set group_id=#{groupId} where beid in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- Integer updateShowedByGroupId(@Param("groupId") Long groupId, @Param("isShowed") boolean isShowed); -->
+    <update id="updateShowedByGroupId">
+        update poh_bought_equipment
+        set showed=#{isShowed}
+        where group_id = #{groupId}
+    </update>
+
+    <!-- Integer updateLockedByGroupId(@Param("groupId") Long groupId, @Param("isLocked") boolean isLocked); -->
+    <update id="updateLockedByGroupId">
+        update poh_bought_equipment
+        set locked=#{isLocked}
+        where group_id = #{groupId}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <script src="../../js/lib/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="../../js/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="../../js/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/backstage.css">
+    <script src="../../js/util/storageUtils.js"></script>
+    <script src="../../js/constant/constants.js"></script>
+    <script src="../../js/lib/axios.js"></script>
+    <script src="../../js/util/security.js"></script>
+    <script src="../../js/common/backstage.js"></script>
+    <script src="../../js/lib/md5.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../device/device_list.html">识途后台系统</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../../index.html"><span class="glyphicon glyphicon-repeat"></span> 返回前台</a></li>
+            <li><a id="logout"><span class="glyphicon glyphicon-log-in"></span> 登出</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="../device/device_list.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        设备信息
+                    </h4>
+                </a>
+                <a href="../device/device_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备列表
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以查看和添加你的设备。
+                    </p>
+                </a>
+                <a href="../device/device_group_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以对您的设备进行分组。
+                    </p>
+                </a>
+                <a href="../device/add_device.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增设备
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的设备。
+                    </p>
+                </a>
+                <a href="../device/add_group.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的分组。
+                    </p>
+                </a>
+            </div>
+
+            <div class="list-group">
+                <a href="./personal_meg.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        隐私信息
+                    </h4>
+                </a>
+                <a href="./personal_meg.html" class="list-group-item">
+                    <h4 class="list-group-item-heading active_choose">
+                        个人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您个人注册的信息。
+                    </p>
+                </a>
+                <a href="./family_meg.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        家人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您创建的家人账号信息。
+                    </p>
+                </a>
+                <a href="./add_family.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        添加家人
+                    </h4>
+                    <p class="list-group-item-text">
+                        新建与你关联的家人账号。
+                    </p>
+                </a>
+                <a href="./about_system.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        关于系统
+                    </h4>
+                    <p class="list-group-item-text">
+                        关于这个系统的来源。
+                    </p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="device_block">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        个人信息
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form" onsubmit="return false">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="username">张三</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">昵称</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="text" class="form-control" id="nickname" placeholder="请输入用户昵称" maxlength="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="text" class="form-control" id="email" placeholder="请输入您的邮箱" maxlength="30">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10" style="width: 300px" id="gender">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="gender" value="0">
+                                    男
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="gender" value="1">
+                                    女
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" id="updatePersonalBtn">修改</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <hr>
+            <div class="device_block">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        修改密码
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form" onsubmit="return false">
+                    <div class="form-group">
+                        <label for="oldPwd" class="col-sm-2 control-label">原密码</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="password" id="oldPwd" class="form-control" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPwd" class="col-sm-2 control-label">新密码</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="password" id="newPwd" class="form-control" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="retryPwd" class="col-sm-2 control-label">确认密码</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="password" id="retryPwd" class="form-control" maxlength="10">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" id="updatePwdBtn">修改</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/backstage/personal/personal_meg.js"></script>
+<!--<script>-->
+<!--    let currentUser = getCurrentUser()-->
+<!--    $('#username').text(currentUser.username)-->
+<!--    $('#nickname').val(currentUser.nickname)-->
+<!--    $('#email').val(currentUser.email)-->
+<!--    if (currentUser.gender === '男') {-->
+<!--        $('#gender input:first').prop('checked', true)-->
+<!--    } else {-->
+<!--        $('#gender input:last').prop('checked', true)-->
+<!--    }-->
+
+<!--    // 更新用户信息-->
+<!--    const updateUser = () => {-->
+<!--        let nickname = $('#nickname').val()-->
+<!--        let email = $('#email').val()-->
+<!--        if (nickname === null || nickname === '') {-->
+<!--            alert("昵称不能为空")-->
+<!--            return-->
+<!--        }-->
+<!--        // 校验邮箱-->
+<!--        let emailReg = /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/;-->
+<!--        if (!emailReg.test(email)) {-->
+<!--            alert("邮箱格式错误")-->
+<!--            return;-->
+<!--        }-->
+<!--        let data = {-->
+<!--            nickname,-->
+<!--            email,-->
+<!--            gender: $('#gender input:checked').val()-->
+<!--        }-->
+
+<!--        axios({-->
+<!--            method: "put",-->
+<!--            url: '/user',-->
+<!--            headers: {'Authorization': getToken()},-->
+<!--            data: data-->
+<!--        }).then(resp => {-->
+<!--            if (resp.data.success) {-->
+<!--                alert("修改成功")-->
+<!--            } else {-->
+<!--                alert("信息修改失败，您可能没有操作权限")-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+
+<!--    const updatePwd = () => {-->
+<!--        let oldPwd = $('#oldPwd').val()-->
+<!--        let newPwd = $('#newPwd').val()-->
+<!--        let retryPwd = $('#retryPwd').val()-->
+<!--        if (oldPwd === null || oldPwd === '') {-->
+<!--            alert('请输入原密码')-->
+<!--            return-->
+<!--        }-->
+<!--        if (newPwd === null || newPwd === '') {-->
+<!--            alert("请输入新密码")-->
+<!--            return-->
+<!--        }-->
+<!--        if (retryPwd === null || retryPwd === '') {-->
+<!--            alert("请确认新密码")-->
+<!--            return-->
+<!--        }-->
+<!--        if (oldPwd === newPwd) {-->
+<!--            alert("您输入的新密码与旧密码一致")-->
+<!--            return-->
+<!--        }-->
+<!--        if (newPwd !== retryPwd) {-->
+<!--            alert("新密码两次密码输入不一致")-->
+<!--            return-->
+<!--        }-->
+<!--        // 密码强度校验-->
+<!--        // 密码必须由数字、字母两种字符组成，长度在8-15位之间-->
+<!--        let pwdReg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,15}$/;-->
+<!--        if (!pwdReg.test(newPwd)) {-->
+<!--            alert("密码强度过低，请重新输入")-->
+<!--            $('#newPwd').val('')-->
+<!--            $('#retryPwd').val('')-->
+<!--            return-->
+<!--        }-->
+<!--        let data = {-->
+<!--            oldPwd: md5(oldPwd),-->
+<!--            newPwd: md5(newPwd)-->
+<!--        }-->
+<!--        axios({-->
+<!--            method: "put",-->
+<!--            url: '/user/pwd',-->
+<!--            headers: {'Authorization': getToken()},-->
+<!--            data: data-->
+<!--        }).then(resp => {-->
+<!--            if (resp.data.success) {-->
+<!--                alert("密码修改成功")-->
+<!--                $('#oldPwd').val('')-->
+<!--                $('#newPwd').val('')-->
+<!--                $('#retryPwd').val('')-->
+<!--            } else {-->
+<!--                alert("密码修改失败，原因可能是：\n" +-->
+<!--                    "1. 原密码错误\n" +-->
+<!--                    "2. 新密码和原密码一致，无需修改\n" +-->
+<!--                    "3. 您没有操作权限")-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+
+<!--    $('#updatePersonalBtn').click(() => {-->
+<!--        updateUser()-->
+<!--    })-->
+<!--    $('#updatePwdBtn').click(() => {-->
+<!--        updatePwd()-->
+<!--    })-->
+<!--</script>-->
+
+</body>
+</html>

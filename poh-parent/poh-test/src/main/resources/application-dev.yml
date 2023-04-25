@@ -1,0 +1,9 @@
+spring:
+  rabbitmq:
+    host: 192.168.20.132
+    port: 5672
+    username: poh_admin
+    password: 123456
+    virtual-host: /poh
+server:
+  port: 8100

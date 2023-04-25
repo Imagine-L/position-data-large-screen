@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <title>识途-厘米级深覆盖定位伴侣</title>
+    <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="js/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="js/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/util/storageUtils.js"></script>
+    <script src="js/constant/constants.js"></script>
+    <script src="js/lib/axios.js"></script>
+    <script src="js/util/security.js"></script>
+
+
+    <script type="text/javascript" src="js/lib/echarts.min.js"></script>
+    <!--    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"/>-->
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: '17d8ab7c245e99fc97169d37eba489a3',
+        }
+    </script>
+    <script type="text/javascript"
+            src="https://webapi.amap.com/maps?v=1.4.15&key=ed7afb03ab65a8934bfd46c3e81807b4"></script>
+    <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
+    <script type="text/javascript"
+            src="https://webapi.amap.com/maps?v=2.0&key=ed7afb03ab65a8934bfd46c3e81807b4&plugin=AMap.Driving"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <style>
+        #panel {
+            position: absolute;
+            background-color: white;
+            max-height: 90%;
+            overflow-y: auto;
+            top: 10px;
+            right: 10px;
+            width: 200px;
+            z-index: 100;
+        }
+
+        #panel .amap-call {
+            background-color: #009cf9;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        #panel .amap-lib-driving {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            overflow: hidden;
+        }
+
+        .historyOperation {
+            cursor: pointer;
+        }
+
+        .historyOperation:hover {
+            color: #f16538;
+        }
+    </style>
+</head>
+
+<body style="visibility: hidden;">
+<div class="container-flex" tabindex="0" hidefocus="true">
+    <div class="box-left">
+        <div class="left-top">
+            <div class="row left-top-box">
+                <div class="col-md-4 col-md-offset-1">
+                    <a href="#" class="thumbnail" style="background: none; border: none;">
+                        <img src="images/logo.png" alt="网站logo">
+                    </a>
+                </div>
+                <div class="col-md-7">
+                    <br>
+                    <div style="font-size: 40px; color: white; font-family: '黑体'">识途</div>
+                    <span style="color: #c0d2ec; font-family: '楷体'">厘米级深覆盖定位伴侣</span>
+                </div>
+            </div>
+        </div>
+        <div class="left-center">
+            <div class="title-box">
+                <h6>我的设备&nbsp;<small style="color: #c9c6c6">-&nbsp;后台选择展示的设备</small></h6>
+            </div>
+            <div class="chart-box">
+                <table class="table3">
+                    <thead>
+                    <tr>
+                        <th>设备名</th>
+                        <th>设备码</th>
+                        <th>设备状态</th>
+                    </tr>
+                    </thead>
+                    <tbody id="showedEquipments">
+                    <!-- 动态加载需要显示的设备 -->
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="left-bottom select">
+            <div class="title-box">
+                <h6>历史行程&nbsp;<small style="color: #c9c6c6">-&nbsp;最近几次出行的记录</small></h6>
+            </div>
+            <p class="unit">注：仅记录最近四次</p>
+            <div class="chart-box">
+                <table class="table3">
+                    <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>设备名</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--<tr><td colspan="4"><p style="width:9.6rem;">暂无数据</p></td></tr>-->
+                    <tr>
+                        <td>2022-07-02</td>
+                        <td>本机</td>
+                        <td>前往特教楼上课</td>
+                        <td class="historyOperation" location="course">查看行程</td>
+                    </tr>
+                    <tr>
+                        <td>2022-07-02</td>
+                        <td>本机</td>
+                        <td>北区食堂吃饭</td>
+                        <td class="historyOperation" location="northCanteen">查看行程</td>
+                    </tr>
+                    <tr>
+                        <td>2022-07-01</td>
+                        <td>本机</td>
+                        <td>南区食堂吃饭</td>
+                        <td class="historyOperation" location="southCanteen">查看行程</td>
+                    </tr>
+                    <tr>
+                        <td>2022-07-01</td>
+                        <td>本机</td>
+                        <td>操场体育锻炼</td>
+                        <td class="historyOperation" location="playground">查看行程</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="box-center">
+        <div class="center-top">
+            <h1>
+                <img src="images/logo.png" style="height:45px;">
+                识途精准定位系统
+            </h1>
+        </div>
+        <div class="center-center">
+            <div class="weather-box">
+                <div class="data">
+                    <p class="time" id="time">00:00:00</p>
+                    <p id="date"></p>
+                </div>
+                <div class="data">
+                    <p class="time">设备信息</p>
+                    <p>
+                        <span>
+                            <img src="images/electric.png" alt="电池" style="width: 15px">&nbsp;100%
+                        </span>
+                        <span>
+                            <img src="images/temperature.png" alt="温度" style="width: 15px">&nbsp;32℃
+                        </span>
+                        <span id="switchFrequency" style="cursor: pointer">
+                            <img src="images/frequency.png" alt="采集频率" style="width: 15px">&nbsp;
+                            <span id="frequencyNum">实时</span>
+                        </span>
+                    </p>
+                </div>
+                <div class="weather">
+                    <img id="weatherImg" src="images/weather/晴.png" alt="">
+                    <div id="weather">
+                        <p class="active">晴</p>
+                        <p>26-33℃</p>
+                        <p>福州市闽侯县</p>
+                    </div>
+                </div>
+            </div>
+            <!--            <img src="images/line_bg.png" alt="">-->
+            <!--            <div class="select-box" style="height: 0.3rem;">-->
+            <!--                <div data-type="2">-->
+            <!--                    <div class="select" tabindex="0" hidefocus="true">-->
+            <!--                        <p style="color:#FFFF00;font-weight:bold;">前往北京共记20次</p>-->
+            <!--                        <p style="color:#7FFF00;font-weight:bold;">前往天津共记10次</p>-->
+            <!--                        <p style="color:#7FFFD4;font-weight:bold;">前往上海共记7次</p>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+        </div>
+        <div class="center-bottom" id="map">
+            <!-- 中间地图 -->
+            <div id="panel"></div>
+        </div>
+
+    </div>
+    <div class="box-right">
+        <div class="right-top">
+            <div class="current-num" style="text-align: center; font-weight: bold;">
+                <div>
+                    <i class="glyphicon glyphicon-user"></i>&nbsp;&nbsp;当前用户&nbsp;->&nbsp;<span id="nickname">游客</span>
+                </div>
+                <div>
+                    <i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;用户身份&nbsp;->&nbsp;<span
+                        id="identity">游客</span>
+                </div>
+                <div>
+                    <i class="glyphicon glyphicon-map-marker"></i>&nbsp;&nbsp;当前位置&nbsp;->&nbsp;<span
+                        id="location">119.163521, 26.075152</span>
+                </div>
+                <div id="right-choose" style="font-size: 13px; text-underline: none; cursor: pointer; color: #0e94ea">
+                    <a id="logout" style="color: #0e94ea">退出账号</a>
+                </div>
+            </div>
+        </div>
+        <div class="right-center">
+            <div class="title-box">
+                <h6 id="barTitle">连接情况&nbsp;<small style="color: #c9c6c6">-&nbsp;设备的连接情况</small></h6>
+            </div>
+            <div class="chart-box">
+                <table class="table3">
+                    <thead>
+                    <tr>
+                        <th>设备名</th>
+                        <th>连接情况</th>
+                        <th>求救信号</th>
+                    </tr>
+                    </thead>
+                    <tbody id="connectState">
+                    <!-- 动态加载连接情况 -->
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+        <div class="right-bottom">
+            <div class="title-box">
+                <p id="switchBtn"><span class="active" data-dataType="income">信号强度&nbsp;<small style="color: #c9c6c6">-&nbsp;在某段时间内的信号波动图</small></span>
+                </p>
+            </div>
+            <!--            <div id="line_time" style="width:90%;height:160px;margin-left:10px;"></div>-->
+            <div id="signal" style="padding-left: 10px; width: 100%; height: 100%"></div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="modal fade" id="frequency"><!--modal,弹出层父级,fade使弹出层有一个运动过程-->
+        <div class="modal-dialog"><!--modal-dialog,弹出层-->
+            <div class="modal-content"><!--modal-content,弹出层内容区域-->
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button><!--将关闭按钮放在标题前面可以使按钮位于右上角-->
+                    <h4>采集频率</h4>
+                </div><!--modal-header,弹出层头部区域-->
+                <div class="modal-body">
+                    <select id="frequencyList" class="form-control form-control-placeholder">
+                        <option value="实时" style="color: black;" selected>实时</option>
+                        <option value="1s" style="color: black;">1秒</option>
+                        <option value="3s" style="color: black;">3秒</option>
+                        <option value="5s" style="color: black;">5秒</option>
+                    </select>
+                </div><!--modal-body,弹出层主体区域-->
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="frequencyBtn">确定</button>
+                    <!--data-dismiss="modal"点击按钮之后可以关闭窗口-->
+                </div><!--modal-footer,弹出层底部区域-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<script src="js/index.js"></script>
+
+<script type="text/javascript">
+    // 是否处于历史视图
+    let isHistoryView = false
+    let historyTrip = {
+        course: {
+            start: [119.163521, 26.075152],
+            stop: [119.158339, 26.074347]
+        },
+        southCanteen: {
+            start: [119.163521, 26.075152],
+            stop: [119.162105, 26.075407]
+        },
+        northCanteen: {
+            start: [119.163521, 26.075152],
+            stop: [119.156075, 26.074747]
+        },
+        playground: {
+            start: [119.163521, 26.075152],
+            stop: [119.157431, 26.073761]
+        }
+    }
+    //基本地图加载
+    let map = new AMap.Map("map", {
+        resizeEnable: true,
+        center: [119.158744, 26.074581],//地图中心点
+        zoom: 17 //地图显示的缩放级别
+    });
+
+    let markerMap = {}
+
+    //构造路线导航类
+    let driving = new AMap.Driving({
+        map: map,
+        panel: "panel"
+    });
+
+    // 更新历史行程的活动轨迹
+    const updateHistory = (startArr, stopArr) => {
+        // 根据起终点经纬度规划驾车导航路线
+        driving.search(new AMap.LngLat(startArr[0], startArr[1]),
+            new AMap.LngLat(stopArr[0], stopArr[1]),
+            function (status, result) {
+                // result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+                if (status === 'complete') {
+                    log.success('显示历史行迹完成')
+                } else {
+                    log.error('显示历史行迹失败：' + result)
+                }
+            });
+    }
+    // updateHistory(historyTrip.course.start, historyTrip.course.stop)
+
+    // 更新历史行程
+    $('.historyOperation').click(function () {
+        if ($(this).text() === '查看行程') {
+            $('.historyOperation').each((index, element) => {
+                $(element).text('查看行程')
+            })
+            let location = historyTrip[$(this).attr('location')];
+            updateHistory(location.start, location.stop)
+            $(this).text('当前定位')
+            isHistoryView = true
+            for (let markerCode in markerMap) {
+                map.remove(markerMap[markerCode])
+            }
+        } else {
+            driving.clear()
+            isHistoryView = false
+            $(this).text('查看行程')
+            for (let markerCode in markerMap) {
+                map.add(markerMap[markerCode])
+            }
+        }
+    })
+
+    // 切换采集频率
+    $('#switchFrequency').click(() => {
+        $('#frequency').modal('show')
+    })
+
+    // 确定更换采集频率
+    $('#frequencyBtn').click(() => {
+        let currFrequencyNum = $('#frequencyNum').text()
+        let frequencyNum = $('#frequencyList option:selected').val()
+        if (currFrequencyNum === frequencyNum) {
+            $('#frequency').modal('hide')
+            return
+        }
+        $('#frequencyNum').text(frequencyNum)
+        $('#frequency').modal('hide')
+        switch (frequencyNum) {
+            case "实时":
+                clearInterval(frequency)
+                frequency = null
+                websocket = websocketFactory.create(serverAddress)
+                break
+            case "1s":
+                clearInterval(frequency)
+                frequency = intervalPositionFactory.create(1000)
+                closeWebsocket()
+                break
+            case "3s":
+                clearInterval(frequency)
+                frequency = intervalPositionFactory.create(3000)
+                closeWebsocket()
+                break
+            case "5s":
+                clearInterval(frequency)
+                frequency = intervalPositionFactory.create(5000)
+                closeWebsocket()
+                break
+        }
+    })
+
+    let path = [
+        [119.161619, 26.075936],
+        [119.16414, 26.075859],
+        [119.164397, 26.074832],
+        [119.161833, 26.074331]
+    ]
+
+    // 安全区
+    let polygon = new AMap.Polygon({
+        path: path,
+        strokeColor: "green",
+        strokeWeight: 6,
+        strokeOpacity: 0.2,
+        fillOpacity: 0.4,
+        fillColor: '#1791fc',
+        zIndex: 50,
+        bubble: true,
+
+    })
+
+    map.add([polygon])
+</script>
+
+<script>
+    let serverAddress = 'ws://localhost:8500/equipment/location'
+
+    // 更新地图定位信息
+    const updateLocation = (locationJson) => {
+        let longitude = locationJson.longitude
+        let latitude = locationJson.latitude
+        let equipMarker = markerMap[locationJson.equipCode]
+        // 更新定位点
+        if (equipMarker !== null) {
+            equipMarker.setPosition([longitude, latitude])
+        }
+        if (locationJson.main) {
+            let locationText = longitude + ',' + latitude
+            $('#location').text(locationText)
+        }
+        console.log(locationJson)
+        // 更新地图视角
+        // 只有在不是历史视图，并且是主设备定位，并且定位点不为空，才切换地图视角
+        if (!isHistoryView && locationJson.main && equipMarker !== null) {
+            map.setZoomAndCenter(17, [longitude, latitude]);
+        }
+    }
+
+    // 构造websocket的工厂
+    const websocketFactory = {
+        create(serverAddress) {
+            if (serverAddress === null || serverAddress === '') {
+                console.log('服务器地址为空，无法建立ws连接')
+                return
+            }
+            websocket = new WebSocket(serverAddress)
+            //连接成功建立的回调方法
+            websocket.onopen = function (event) {
+                let token = getToken();
+                websocket.send(token)
+                console.log("ws建立连接成功");
+            }
+            //连接关闭的回调方法
+            websocket.onclose = function (event) {
+                console.log("ws连接关闭");
+            }
+            //接收到消息的回调方法
+            websocket.onmessage = function (event) {
+                if (event.data === null) {
+                    return
+                }
+                let locationJson = JSON.parse(event.data)
+                updateLocation(locationJson)
+            }
+            //连接发生错误的回调方法
+            websocket.onerror = function (event) {
+                alert('websocket通信发生错误！')
+            }
+            return websocket;
+        }
+    }
+
+    // 创建实时定位使用的websocket
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = websocketFactory.create(serverAddress)
+    } else {
+        alert('当前浏览器不支持websocket消息通知\n建议使用谷歌/火狐浏览器!');
+    }
+
+    const closeWebsocket = () => {
+        if (websocket !== null) {
+            websocket.close();
+        }
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = () => {
+        closeWebsocket()
+    }
+
+    // 轮询定位工厂
+    const intervalPositionFactory = {
+        create(secondsTime) {
+            return setInterval(() => {
+                axios({
+                    method: "get",
+                    url: '/location',
+                    headers: {'Authorization': getToken()}
+                }).then((resp) => {
+                    if (!resp.data.success || resp.data.data == null) {
+                        return
+                    }
+                    let locationJson = resp.data.data
+                    updateLocation(locationJson)
+                })
+            }, secondsTime)
+        }
+    }
+    // 轮询定位，默认为null不开启，选中采集频率开启
+    let frequency = null;
+</script>
+
+
+<script type="text/javascript">
+    $('document').ready(function () {
+        $("body").css('visibility', 'visible');
+        var localData = [$('#teacher').val(), $('#start').val() + '/' + $('#end').val(), $('#leader').val()]
+        localStorage.setItem("data", localData);
+    })
+</script>
+
+
+</html>

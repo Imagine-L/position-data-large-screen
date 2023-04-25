@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.liubaiblog.poh.mapper.EquipGroupMapper">
+
+    <!-- List<String> getNamesByUid(Long uid); -->
+    <select id="getNamesByUid" resultType="java.lang.String">
+        select group_name
+        from poh_equip_group
+        where group_owner = ${uid}
+    </select>
+
+    <select id="listByParams" resultType="top.liubaiblog.poh.pojo.vo.EquipGroupVO">
+        select *
+        from (
+        select g.gid, g.group_name, g.description, count(e.group_id) `count`
+        from poh_equip_group g
+        left join poh_equipment_view e on e.group_id = g.gid
+        where g.group_owner = #{uid}
+            <if test="groupName != null and groupName != ''">
+                and g.group_name like "%"#{groupName}"%"
+            </if>
+            <if test="description != null and description != ''">
+                and g.description like "%"#{description}"%"
+            </if>
+        group by g.gid, g.group_name, g.description
+        ) temp
+        <where>
+            <if test="count != null and count >= 0">
+                count = #{count}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高德API测试</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        #box {
+            width: 100%;
+            height: 100%;
+            background-color: rgb(242, 248, 241);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #container {
+            width: 1000px;
+            height: 600px;
+            border: 2px solid rgb(56, 98, 236);
+            background-color: white;
+        }
+
+        #signal {
+            width: 300px;
+            height: 200px;
+            border: 1px solid red;
+            margin: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode:'17d8ab7c245e99fc97169d37eba489a3',
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=ed7afb03ab65a8934bfd46c3e81807b4"></script>
+    <script type="text/javascript" src="js/lib/echarts.min.js"></script>
+</head>
+<body>
+    <div id="box">
+        <div id="container"></div>
+        <div id="signal"></div>
+    </div>
+
+    <script>
+        let map = new AMap.Map('container', {
+            zoom:11,//级别
+            center: [116.40, 41.9],//中心点坐标
+            viewMode:'3D'//使用3D视图
+        });
+        let marker = new AMap.Marker({
+            position:[116.40, 41.9]//位置
+        })
+        map.add(marker);//添加到地图
+
+        let chartDom = document.getElementById('signal');
+        let myChart = echarts.init(chartDom);
+        let option;
+
+        option = {
+            xAxis: {
+                type: 'category',
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: [150, 230, 224, 218, 135, 147, 260],
+                    type: 'line'
+                }
+            ]
+        };
+
+        option && myChart.setOption(option);
+
+    </script>
+</body>
+</html>

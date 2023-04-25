@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>识途-客户端后台管理系统</title>
+    <script src="../../js/lib/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="../../js/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="../../js/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../css/backstage.css">
+    <script src="../../js/util/storageUtils.js"></script>
+    <script src="../../js/constant/constants.js"></script>
+    <script src="../../js/lib/axios.js"></script>
+    <script src="../../js/util/security.js"></script>
+    <script src="../../js/common/backstage.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="./device_list.html">识途后台系统</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="../../index.html"><span class="glyphicon glyphicon-repeat"></span> 返回前台</a></li>
+            <li><a id="logout"><span class="glyphicon glyphicon-log-in"></span> 登出</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="device_list.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        设备信息
+                    </h4>
+                </a>
+                <a href="device_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading active_choose">
+                        设备列表
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以查看和添加你的设备。
+                    </p>
+                </a>
+                <a href="./device_group_list.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        设备分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        您可以对您的设备进行分组。
+                    </p>
+                </a>
+                <a href="add_device.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增设备
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的设备。
+                    </p>
+                </a>
+                <a href="add_group.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        新增分组
+                    </h4>
+                    <p class="list-group-item-text">
+                        添加新的分组。
+                    </p>
+                </a>
+            </div>
+
+            <div class="list-group">
+                <a href="../personal/personal_meg.html" class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                        隐私信息
+                    </h4>
+                </a>
+                <a href="../personal/personal_meg.html" class="list-group-item ac">
+                    <h4 class="list-group-item-heading">
+                        个人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您个人注册的信息。
+                    </p>
+                </a>
+                <a href="../personal/family_meg.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        家人信息
+                    </h4>
+                    <p class="list-group-item-text">
+                        您创建的家人账号信息。
+                    </p>
+                </a>
+                <a href="../personal/add_family.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        添加家人
+                    </h4>
+                    <p class="list-group-item-text">
+                        新建与你关联的家人账号。
+                    </p>
+                </a>
+                <a href="../personal/about_system.html" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        关于系统
+                    </h4>
+                    <p class="list-group-item-text">
+                        关于这个系统的来源。
+                    </p>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="device_block">
+                <table class="table table-bordered">
+                    <caption>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                设备列表
+                            </div>
+                        </div>
+                        <form class="bs-example bs-example-form row form-inline col-lg-offset-0" role="form">
+                            <div class="input-group col-md-3">
+                                <span class="input-group-addon">设备名</span>
+                                <input type="text" class="form-control" id="deviceNameSearch" placeholder="deviceName">
+                            </div>
+
+                            <div class="input-group col-md-3">
+                                <span class="input-group-addon">设备分组</span>
+                                <input type="text" class="form-control" id="deviceGroupSearch"
+                                       placeholder="deviceGroup">
+                            </div>
+
+                            <div class="input-group col-md-3">
+                                <span class="input-group-addon">设备码</span>
+                                <input type="text" class="form-control" id="deviceIdSearch" placeholder="deviceId" maxlength="15">
+                            </div>
+                            <input type="button" class="btn btn-primary" id="search" value="查询">
+                            <a type="button" id="toSavePage" class="btn btn-primary">新增</a>
+                        </form>
+                        <p></p>
+                    </caption>
+                    <thead>
+                    <tr>
+                        <th>设备名</th>
+                        <th>设备分组</th>
+                        <th>设备码</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="deviceTbody">
+                    </tbody>
+                </table>
+            </div>
+            <hr>
+            <div class="device_block">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        设备信息
+                    </div>
+                </div>
+                <form class="form-horizontal" role="form" onsubmit="return false">
+                    <div class="form-group">
+                        <label for="deviceName" class="col-sm-2 control-label">设备名</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <input type="text" id="deviceName" class="form-control" maxlength="10" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">设备分组</label>
+                        <div class="col-sm-10" style="width: 300px">
+                            <label>
+                                <select id="equipGroupNames" class="form-control form-control-placeholder" disabled>
+                                    <!-- 动态加载分组名 -->
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">设备码</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="deviceCode">xxxxxx</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">设备版本</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="version">VERSION1.0</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">设备型号</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="type">POH_CM_POSITION</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">电池容量</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span id="batteryCapacity"></span>0毫安</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="showed" disabled>主页中展示
+                                </label>
+                                &nbsp;&nbsp;
+                                <label>
+                                    <input type="checkbox" id="main" disabled>设置为主设备
+                                </label>
+                                &nbsp;&nbsp;
+                                <label>
+                                    <input type="checkbox" id="locked" disabled>禁用此设备
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" id="saveBtn" disabled>保存</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../js/backstage/device/device_list.js"></script>
+<!--<script>-->
+<!--    const equipmentParams = {-->
+<!--        equipCode: '',-->
+<!--        groupName: '',-->
+<!--        equipName: ''-->
+<!--    }-->
+<!--    // 设备信息表单开启与禁用-->
+<!--    const formDisabled = (isDisabled) => {-->
+<!--        $('#deviceName').prop('disabled', isDisabled)-->
+<!--        $('#equipGroupNames').prop('disabled', isDisabled)-->
+<!--        $('#main').prop('disabled', isDisabled)-->
+<!--        $('#showed').prop('disabled', isDisabled)-->
+<!--        $('#locked').prop('disabled', isDisabled)-->
+<!--        $('#saveBtn').prop('disabled', isDisabled)-->
+<!--    }-->
+<!--    // 获取设备分组的名字列表-->
+<!--    const getEquipGroupNames = () => {-->
+<!--        axios({-->
+<!--            method: "get",-->
+<!--            url: '/equipGroup/names',-->
+<!--            headers: {'Authorization': getToken()}-->
+<!--        }).then(resp => {-->
+<!--            if (!resp.data.success || resp.data.data === null) return-->
+<!--            let html = '<option value="-1" disabled selected hidden>请选择</option>'-->
+<!--            resp.data.data.forEach(group => {-->
+<!--                html += `<option value="${group.gid}" style="color: black;">${group.groupName}</option>`-->
+<!--            })-->
+<!--            $('#equipGroupNames').html(html)-->
+<!--        })-->
+<!--    }-->
+<!--    getEquipGroupNames()-->
+
+<!--    // 查询某个设备的详细信息，由于可能有后续操作，所以我们返回Promise对象-->
+<!--    const getDetailEquipment = (eid) => {-->
+<!--        return new Promise((resolve, reject) => {-->
+<!--            axios({-->
+<!--                method: "get",-->
+<!--                url: `/equipment/${eid}`,-->
+<!--                headers: {'Authorization': getToken()}-->
+<!--            }).then(resp => {-->
+<!--                if (!resp.data.success || resp.data.data === null) {-->
+<!--                    resolve(false)-->
+<!--                    return;-->
+<!--                }-->
+<!--                let equipment = resp.data.data-->
+<!--                console.log(equipment)-->
+<!--                $('#deviceName').val(equipment.equipName)-->
+<!--                $('#deviceCode').text(equipment.equipCode)-->
+<!--                $('#version').text(equipment.version)-->
+<!--                $('#type').text(equipment.type)-->
+<!--                $('#equipGroupNames option').each((index, option) => {-->
+<!--                    if ($(option).val() === equipment.groupId) {-->
+<!--                        $(option).prop('selected', true)-->
+<!--                    }-->
+<!--                })-->
+<!--                $('#batteryCapacity').text(equipment.batteryCapacity)-->
+<!--                $('#showed').prop('checked', equipment.showed)-->
+<!--                $('#main').prop('checked', equipment.main)-->
+<!--                $('#locked').prop('checked', equipment.locked)-->
+<!--                formDisabled(true)-->
+<!--                resolve(true)-->
+<!--            }).catch(err => reject(err))-->
+<!--        })-->
+<!--    }-->
+
+<!--    // 点击修改按钮-->
+<!--    const clickUpdate = (eid) => {-->
+<!--        getDetailEquipment(eid).then((success) => {-->
+<!--            if (success) {-->
+<!--                formDisabled(false)-->
+<!--                $('#deviceName').focus()-->
+<!--            } else {-->
+<!--                console.log("获取详细信息失败")-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+
+<!--    // 保存修改的设备信息-->
+<!--    const updateEquipment = () => {-->
+<!--        let equipName = $('#deviceName').val();-->
+<!--        if (equipName === '') {-->
+<!--            alert("设备名不能为空!")-->
+<!--            return-->
+<!--        }-->
+<!--        let equipGroupName = $('#equipGroupNames option:selected').val();-->
+<!--        if (equipGroupName === '-1') {-->
+<!--            alert("请选择设备分组!")-->
+<!--            return-->
+<!--        }-->
+<!--        let data = {-->
+<!--            equipCode: $('#deviceCode').text(),-->
+<!--            equipName: equipName,-->
+<!--            groupId: equipGroupName,-->
+<!--            main: $('#main').prop('checked'),-->
+<!--            showed: $('#showed').prop('checked'),-->
+<!--            locked: $('#locked').prop('checked')-->
+<!--        }-->
+<!--        axios({-->
+<!--            method: "put",-->
+<!--            url: '/equipment',-->
+<!--            headers: {'Authorization': getToken()},-->
+<!--            data: data-->
+<!--        }).then(resp => {-->
+<!--            if (!resp.data.success) {-->
+<!--                alert("系统繁忙，请稍后重试")-->
+<!--                return-->
+<!--            }-->
+<!--            formDisabled(true)-->
+<!--            getEquipmentList(false);-->
+<!--            alert("修改成功")-->
+<!--        })-->
+<!--    }-->
+
+<!--    // 删除设备-->
+<!--    const deleteEquipment = (eid) => {-->
+<!--        let isDelete = confirm(`是否确认删除该设备？`)-->
+<!--        if (!isDelete) {-->
+<!--            return-->
+<!--        }-->
+<!--        axios({-->
+<!--            method: "delete",-->
+<!--            url: `/equipment/${eid}`,-->
+<!--            headers: {'Authorization': getToken()},-->
+<!--        }).then(resp => {-->
+<!--            if (resp.data.success) {-->
+<!--                $('#' + eid).remove()-->
+<!--            } else {-->
+<!--                alert("系统繁忙，请稍后重试")-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+
+<!--    // 查询设备列表-->
+<!--    const getEquipmentList = (isReloadDetail) => {-->
+<!--        equipmentParams.equipName = $('#deviceNameSearch').val()-->
+<!--        equipmentParams.groupName = $('#deviceGroupSearch').val()-->
+<!--        equipmentParams.equipCode = $('#deviceIdSearch').val()-->
+<!--        axios({-->
+<!--            method: "post",-->
+<!--            url: '/equipment/list',-->
+<!--            headers: {'Authorization': getToken()},-->
+<!--            data: equipmentParams-->
+<!--        }).then(resp => {-->
+<!--            if (!resp.data.success || resp.data.data === null) return-->
+<!--            let html = ''-->
+<!--            resp.data.data.forEach(equipment => {-->
+<!--                html += `<tr id="${equipment.eid}">`-->
+<!--                /// 原定计划是在表格中多显示一行不显示的id，但是后面好像发现不用也可以，留着怕后面有用-->
+<!--                // html += `<td style="display: none">${equipment.eid}</td>`-->
+<!--                if (isReloadDetail && resp.data.data[0] !== null) {-->
+<!--                    getDetailEquipment(resp.data.data[0].eid)-->
+<!--                }-->
+<!--                html += `<td>${equipment.equipName}</td>`-->
+<!--                html += `<td>${equipment.groupName}</td>`-->
+<!--                html += `<td>${equipment.equipCode}</td>`-->
+<!--                html += '<td>'-->
+<!--                html += `<button type="button" class="btn btn-primary dropdown-toggle" onclick="getDetailEquipment(\'${equipment.eid}\')">`-->
+<!--                html += '查看'-->
+<!--                html += '</button>&nbsp;'-->
+<!--                html += `<button type="button" class="btn btn-primary dropdown-toggle" onclick="clickUpdate(\'${equipment.eid}\')" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">`-->
+<!--                html += '修改'-->
+<!--                html += '</button>&nbsp;'-->
+<!--                html += `<button type="button" class="btn btn-danger dropdown-toggle" onclick="deleteEquipment(\'${equipment.eid}\')" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">`-->
+<!--                html += '删除'-->
+<!--                html += '</button>&nbsp;'-->
+<!--                html += '</td>'-->
+<!--                html += '</tr>'-->
+<!--            })-->
+<!--            $('#deviceTbody').html(html)-->
+<!--        })-->
+<!--    }-->
+<!--    getEquipmentList(true)-->
+
+
+<!--    // 单击查询按钮再次进行查询-->
+<!--    $('#search').click(() => {-->
+<!--        getEquipmentList(true)-->
+<!--    })-->
+
+<!--    // 点击保存按钮-->
+<!--    $('#saveBtn').click(() => {-->
+<!--        updateEquipment()-->
+<!--    })-->
+
+<!--    // 点击新增按钮-->
+<!--    $('#toSavePage').click(() => {-->
+<!--        location.href = '/backstage/device/add_device.html'-->
+<!--    })-->
+<!--    //-->
+<!--    // $('#logout').click(() => {-->
+<!--    //     // 发起请求-->
+<!--    //     axios({-->
+<!--    //         method: "get",-->
+<!--    //         url: '/logout',-->
+<!--    //         headers: {'Authorization': getToken() }-->
+<!--    //     }).then((resp) => {-->
+<!--    //         console.log("登出成功")-->
+<!--    //     })-->
+<!--    //     storageUtils.LOCAL.remove(storageConstant.CURRENT_USER_TAG)-->
+<!--    //     location.href = "../../login.html"-->
+<!--    // })-->
+<!--</script>-->
+
+</body>
+</html>
